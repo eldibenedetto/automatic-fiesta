@@ -3,7 +3,7 @@
 The Subscriptions API is a RESTful Django application used to create and list Customer resources.
 ## Manual Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+### Clone Repo
 
 ```bash
 git clone https://github.com/eldibenedetto/automatic-fiesta.git && cd automatic-fiesta
@@ -16,6 +16,7 @@ poetry install
 ```
 *** You may need to adjust the pyproject.toml file to use the python environment configured on your machine. Also ```poetry env use python3.__``` can help configure the python environment correctly.
 
+### Make Migrations
 ```bash
 poetry run python3 manage.py migrate
 ```
@@ -27,6 +28,11 @@ poetry run python3 manage.py migrate
 ### Start Server
 ```bash
 poetry run python3 manage.py runserver
+```
+or 
+```bash
+docker-compose build
+docker-compose up -d
 ```
 
 base url = ```http://127.0.0.1/api/v1/```
