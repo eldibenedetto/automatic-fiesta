@@ -1,22 +1,33 @@
 # The Atlantic Subscriptions API
 
 The Subscriptions API is a RESTful Django application used to create and list Customer resources.
-
-## Installation
+## Manual Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
-git clone ____ && cd _____
+git clone https://github.com/eldibenedetto/automatic-fiesta.git && cd automatic-fiesta
 ```
 This project was developed using [Poetry](https://github.com/python-poetry/poetry), a python package manager. If you'd like to use poetry you can install it using the command below. (You can install packages manually in your ```virtualenv``` using the pyproject.toml file as a reference)
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
+PATH="${PATH}:/root/.local/bin"
+poetry install
 ```
+*** You may need to adjust the pyproject.toml file to use the python environment configured on your machine. Also ```poetry env use python3.__``` can help configure the python environment correctly.
+
+```bash
+poetry run python3 manage.py migrate
+```
+
 ## Database Schema
 ![alt text](https://github.com/eldibenedetto/upgraded-barnacle/blob/main/Screen%20Shot%202021-06-07%20at%2011.59.40%20PM.png?raw=true)
 
 ## Getting Started
+### Start Server
+```bash
+poetry run python3 manage.py runserver
+```
 
 base url = ```http://127.0.0.1/api/v1/```
 
