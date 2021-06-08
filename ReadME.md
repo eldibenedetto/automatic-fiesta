@@ -9,6 +9,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 git clone https://github.com/eldibenedetto/automatic-fiesta.git && cd automatic-fiesta
 ```
 This project was developed using [Poetry](https://github.com/python-poetry/poetry), a python package manager. If you'd like to use poetry you can install it using the command below. (You can install packages manually in your ```virtualenv``` using the pyproject.toml file as a reference)
+### Poetry Configuration
 ```bash
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
 PATH="${PATH}:/root/.local/bin"
