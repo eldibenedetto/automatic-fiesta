@@ -4,7 +4,7 @@ import json
 from django.db.utils import IntegrityError
 from .models import Customer, Subscription, Gift
 from django.urls import reverse
-# from .views import CustomerViewSet
+from .views import CustomerViewSet
 
 class CustomerTest(TestCase):
 
@@ -56,3 +56,151 @@ class GiftTest(TestCase):
         with self.assertRaises(Exception) as raised:
             self.create_gift()
         self.assertEqual(IntegrityError, type(raised.exception), msg='Gift must belong to a Customer')
+
+json_list_2 = [
+    {
+        "id": "53368db4-6097-49c6-ba8b-b00ab4a3ce3b",
+        "plan_name": "digital",
+        "price": "4999",
+        "recipient_email": "mark@twain.com"
+    },
+    {
+        "id": "fb7a077b-928f-4d44-a2e5-6969c72d3b45",
+        "plan_name": "digital",
+        "price": "4999",
+        "recipient_email": "jane@austin.com"
+    }
+]
+json_list_1 = [
+    {
+        "id": "fc7a077b-928f-4d44-a2e5-6969c72d3b45",
+        "plan_name": "digital",
+        "price": "4999",
+        "recipient_email": "jane@austin.com"
+    }
+]
+json_list_0 = []
+
+sub_data = {
+    "id": "eac8709f-d898-42f0-84d8-a1997c25cae9",
+    "plan_name": "print & digital",
+    "price": "5999"
+}
+
+full_json = {
+    "customer": {
+        "id": "b73b8b0e-0240-42a9-874c-00445d51dd8a",
+        "first_name": "Ernest",
+        "last_name": "Hemingway",
+        "address_1": "907 Whitehead St",
+        "address_2": "",
+        "city": "Key West",
+        "state": "FL",
+        "postal_code": "33043",
+        "subscription": {
+            "id": "eac8709f-d898-42f0-84d8-a1997c25cae9",
+            "plan_name": "print & digital",
+            "price": "5999",
+        },    
+        "gifts":[
+            {
+                "id": "53368db4-6097-49c6-ba8b-b00ab4a3ce3b",
+                "plan_name": "digital",
+                "price": "4999",
+                "recipient_email": "mark@twain.com"
+            },
+            {
+                "id": "fb7a077b-928f-4d44-a2e5-6969c72d3b45",
+                "plan_name": "digital",
+                "price": "4999",
+                "recipient_email": "jane@austin.com"
+            }
+        ]
+    }
+}
+no_sub_json = {
+    "customer": {
+        "id": "c73b8b0e-0240-42a9-874c-00445d51dd8a",
+        "first_name": "Ernest",
+        "last_name": "Hemingway",
+        "address_1": "907 Whitehead St",
+        "address_2": "",
+        "city": "Key West",
+        "state": "FL",
+        "postal_code": "33043",   
+        "gifts":[
+            {
+                "id": "63368db4-6097-49c6-ba8b-b00ab4a3ce3b",
+                "plan_name": "digital",
+                "price": "4999",
+                "recipient_email": "mark@twain.com"
+            },
+            {
+                "id": "gb7a077b-928f-4d44-a2e5-6969c72d3b45",
+                "plan_name": "digital",
+                "price": "4999",
+                "recipient_email": "jane@austin.com"
+            }
+        ]
+    }
+}
+no_gifts_json = {
+    "customer": {
+        "id": "d73b8b0e-0240-42a9-874c-00445d51dd8a",
+        "first_name": "Ernest",
+        "last_name": "Hemingway",
+        "address_1": "907 Whitehead St",
+        "address_2": "",
+        "city": "Key West",
+        "state": "FL",
+        "postal_code": "33043",
+        "subscription": {
+            "id": "fac8709f-d898-42f0-84d8-a1997c25cae9",
+            "plan_name": "print & digital",
+            "price": "5999",
+        },    
+        "gifts":[]
+    }
+}
+
+class CustomerViewSetTest(TestCase):
+
+    def test_customer_list_view(self):
+        c = CustomerTest.create_customer(self)
+        url = reverse('customer-list')
+        resp = self.client.get(url)
+        # Check Status Code
+        self.assertEqual(resp.status_code, 200)
+        # Check instance is returned in response
+        self.assertIn(c.id, resp.json()[0]['id'])
+    
+    def test_gifts_create_view(self):
+        json_lists =[json_list_2, json_list_1, json_list_0]
+        c = CustomerTest.create_customer(self)
+        # Check right number of Gifts created
+        for json_list in json_lists:
+            gifts = CustomerViewSet.create_gifts(CustomerViewSet, json_list, c)
+            res = all(isinstance(sub, type(Gift())) for sub in gifts)
+            self.assertTrue(res)
+            self.assertTrue(len(json_list) == len(gifts))
+    
+    def test_subscription_create_view(self):
+        c = CustomerTest.create_customer(self)
+        sub = CustomerViewSet.create_subscription(CustomerViewSet, sub_data, c)
+        self.assertTrue(isinstance(sub, type(Subscription())))
+    
+    def test_parse_payload_view(self):
+        with self.assertRaises(Exception) as raised:
+            CustomerViewSet.parse_payload(CustomerViewSet, json.dumps(no_sub_json))
+        self.assertEqual(ValueError, type(raised.exception), msg="Key: 'subscription' is required.")
+
+    def test_create_instances_view(self):
+        poss_request_data = [full_json, no_sub_json, no_gifts_json]
+        for req_data in poss_request_data:
+            url = reverse('customer-list')
+            resp = self.client.post(url, req_data)
+            # Check Status Code
+            if 'subscriptions' in req_data:
+                self.assertEqual(resp.status_code, 200)
+            else:
+                self.assertEqual(resp.status_code, 400)
