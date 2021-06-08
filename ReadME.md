@@ -36,7 +36,7 @@ docker-compose build
 docker-compose up -d
 ```
 
-base url = ```http://127.0.0.1/api/v1/```
+base url = ```http://localhost/api/v1/```
 
 ### List
 
