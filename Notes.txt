@@ -1,0 +1,11 @@
+Notes for Code Walkthrough
+1) Could've used Class Based View, but decided to absract away some of the code
+2) Decided to use a one-to-one field for subscription because in my head a customer can only have one subscription at a time, and a foreign key would've returned a queryset
+3) Could've had Gifts inherit from Subscription, then there would only be a need to add one field for recip_email because the others would've inherited from Subscription
+4) Should've broken out the helper functions in views.py into a separate utils.py file
+
+Questions:
+Why I tested the things that i tested?
+Why'd I structure it this way?
+How configurable?
+How would i deploy?

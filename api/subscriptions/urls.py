@@ -1,8 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import CustomerViewSet
+from .views import CustomerList
 
-router = DefaultRouter()
-router.register("subscriptions", CustomerViewSet,basename="customer")
-urlpatterns = [path("v1/", include(router.urls))]
+urlpatterns = [path("subscriptions/", CustomerList.as_view())]
